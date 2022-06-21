@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'androidx.navigation.safeargs.kotlin'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -39,6 +40,7 @@ android {
 
 dependencies {
 
+    implementation 'com.google.firebase:firebase-auth-ktx:21.0.1'
     def lifecycle_version = "2.3.0"
 
 
@@ -83,9 +85,26 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.0-beta01")
 
 
+    //google login
+    implementation platform('com.google.firebase:firebase-bom:28.4.2')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.google.android.gms:play-services-auth:19.2.0'
+
+
     //Navigation Component
     def nav_version = "2.4.1"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
+    // DrawerLayout
+    implementation 'androidx.navigation:navigation-fragment:2.0.0'
+    implementation 'androidx.navigation:navigation-ui:2.0.0'
+
+    def activity_version = "1.2.0-beta01"
+    implementation "androidx.activity:activity-ktx:$activity_version"
+
+
+
 
 }
