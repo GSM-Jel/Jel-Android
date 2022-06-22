@@ -8,9 +8,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.GravityCompat
+import androidx.navigation.findNavController
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.material.navigation.NavigationView
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,6 +27,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private lateinit var headB: HeaderBinding
+    private val loginViewModel : LoginViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +36,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(binding.root)
         initViews()
         setNavigationView()
+        loginViewModel.initGoogleLogin(this)
     }
 
     private fun initViews() = with(binding) {
@@ -79,6 +86,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 )
                 startActivity(intent)
             }
+
+            R.id.logOut -> {
+                loginViewModel.signOut()
+                finish()
+            }
+
+
 
         }
         return false

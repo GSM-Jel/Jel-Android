@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -23,7 +24,7 @@ class LoginActivity : AppCompatActivity() {
     private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
     private val auth by lazy { FirebaseAuth.getInstance() }
     private lateinit var requestActivity : ActivityResultLauncher<Intent>
-    private lateinit var googleSignInClient: GoogleSignInClient
+    private val loginViewModel : LoginViewModel by viewModels()
 
     private val TAG = "LoginActivity"
 
@@ -33,19 +34,12 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         binding.activity = this
-        initGoogleLogin()
+        loginViewModel.initGoogleLogin(this)
         resultActivity()
         binding.loginGoogle.setOnClickListener { signIn() }
     }
 
-    private fun initGoogleLogin() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
 
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
-    }
 
     private fun resultActivity(){
         requestActivity = registerForActivityResult(
@@ -66,7 +60,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun signIn() {
-        val signInIntent = googleSignInClient.signInIntent
+        val signInIntent = loginViewModel.googleSignInClient.signInIntent
         requestActivity.launch(signInIntent)
     }
 
@@ -82,8 +76,7 @@ class LoginActivity : AppCompatActivity() {
                     } else {
                         Toast.makeText(this, "학교 계정을 사용해주세요", Toast.LENGTH_SHORT).show()
                         auth.currentUser?.delete()
-                        googleSignInClient.signOut()
-                        googleSignInClient.revokeAccess()
+                        loginViewModel.signOut()
                     }
 
                 } else {
